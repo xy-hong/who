@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>who is the spy</title>
+</head>
+<body>
+    <h1>Who Is The Spy?!</h1>
+    <textarea id="sendArea" rows="5"></textarea>
+    <textarea id="receiveArea" rows="5" disabled></textarea>
+    <button onclick="wsSend()">send</button>
+    <button onclick="WebSocketTest()">connect</button>
+    <button onclick="wsDisconnect()">disconnect</button>
+</body>
+<script>
+    let ws = null
+    function WebSocketTest() {
+        if ("WebSocket" in window) {
+            // 打开一个 web socket
+            ws = new WebSocket("ws://localhost:8080/room/555");
+
+            ws.onopen = function() {
+                console.log("连接成功")
+            };
+
+            ws.onmessage = function (evt) {
+                const received_msg = evt.data;
+                display(received_msg)
+            };
+
+            ws.onclose = function() {
+                console.log("连接关闭")
+            };
+        } else {
+            // 浏览器不支持 WebSocket
+            alert("您的浏览器不支持 WebSocket!");
+        }
+    }
+
+    function display(v) {
+        document.querySelector('#receiveArea').value += v
+    }
+
+    function wsSend() {
+       const v =  document.querySelector('#sendArea').value
+       ws.send(v)
+    }
+
+    function wsDisconnect() {
+        ws.close()
+    }
+</script>
+</html>
